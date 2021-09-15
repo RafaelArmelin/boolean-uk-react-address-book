@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ContactsList from "./ContactsList";
 
 function CreateContactForm() {
   // [TODO] Write form handlers here and POST requests here...
@@ -64,6 +65,14 @@ function CreateContactForm() {
           .then((res) => res.json())
           .then((newContact) => {
             console.log("New contact: ", newContact);
+
+            const contactToAdd = {
+              ...newContact,
+              address: newAddress,
+            };
+            console.log("contactToAdd: ", contactToAdd);
+
+            setContacts([...ContactsList, contactToAdd]);
           });
       });
   };

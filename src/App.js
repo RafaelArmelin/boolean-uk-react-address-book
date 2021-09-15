@@ -30,7 +30,11 @@ export default function App() {
         hideForm={hideForm}
         setHideForm={setHideForm}
       />
-      <main>{!hideForm && <CreateContactForm />}</main>
+      <main>
+        {!hideForm && (
+          <CreateContactForm contacts={contacts} setContacts={setContacts} />
+        )}
+      </main>
     </>
   );
 }

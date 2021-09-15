@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ContactsList from "./components/ContactsList";
 import CreateContactForm from "./components/CreateContactForm";
+import EditContactForm from "./components/EditContactForm";
 import "./styles.css";
 
 export default function App() {
   const [contacts, setContacts] = useState([]);
   const [hideForm, setHideForm] = useState(true);
-  console.log("state: ", contacts);
-
-  // [TODO] Write a useEffect to fetch contacts here...
+  const [userToEdit, setUserToEdit] = useState(null);
+  console.log("userToEdit:", userToEdit);
 
   useEffect(() => {
-    const url = "http://localhost:3030/contacts";
-    console.log(url);
-
+    const url = `http://localhost:3030/contacts`;
     fetch(url)
       .then((res) => res.json())
-      .then((allContacts) => {
-        console.log("inside contacts fetch: ", allContacts);
-
-        setContacts(allContacts);
+      .then((ContactsData) => {
+        setContacts(ContactsData);
       });
   }, []);
 
@@ -29,11 +25,13 @@ export default function App() {
         contacts={contacts}
         hideForm={hideForm}
         setHideForm={setHideForm}
+        setUserToEdit={setUserToEdit}
       />
       <main>
         {!hideForm && (
           <CreateContactForm contacts={contacts} setContacts={setContacts} />
         )}
+        {<EditContactForm userToEdit={userToEdit} />}
       </main>
     </>
   );

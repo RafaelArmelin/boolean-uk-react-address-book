@@ -1,5 +1,5 @@
 function ContactsList(props) {
-  const { contacts, hideForm, setHideForm } = props;
+  const { contacts, hideForm, setHideForm, setUserToEdit } = props;
 
   return (
     <aside className="contacts-section light-shadow">
@@ -21,6 +21,21 @@ function ContactsList(props) {
               <h3>
                 {firstName} {lastName}
               </h3>
+              <button className="button" className="button new-contact-btn">
+                {" "}
+                View
+              </button>
+
+              <button
+                className="button"
+                className="button new-contact-btn"
+                onClick={() => {
+                  setUserToEdit(contact);
+                }}
+              >
+                Edit{" "}
+              </button>
+
               <p>
                 {address.street}, {address.postCode}
               </p>

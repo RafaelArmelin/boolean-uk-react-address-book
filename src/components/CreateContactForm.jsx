@@ -1,57 +1,62 @@
 import { useState } from "react";
-import ContactsList from "./ContactsList";
 
-function CreateContactForm() {
-  // [TODO] Write form handlers here and POST requests here...
+function CreateContactForm(props) {
+  const { contacts, setContacts } = props;
 
-  //Creating the Contact State
-  const [firstName, setFistName] = useState("");
+  const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [blockContact, setBlockContact] = useState(false);
-
-  //Creating the Address State
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postCode, setPostCode] = useState("");
+  const [check, setCheck] = useState(false);
 
-  // console.log("CreateContactForm State: ", {
-  //   contact: {
-  //     firstName,
-  //     lastName,
-  //     blockContact,
-  //   },
-  //   address: { street, city, postCode },
-  // });
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleUserNameInput = (e) => {
+    setName(e.target.value);
+  };
+  const handleUserLastNameInput = (e) => {
+    setLastName(e.target.value);
+  };
+  const handleStreetInput = (e) => {
+    setStreet(e.target.value);
+  };
+  const handleCityInput = (e) => {
+    setCity(e.target.value);
+  };
+  const handlePostCodeInput = (e) => {
+    setPostCode(e.target.value);
+  };
+  const handleCheckbox = (e) => {
+    setCheck(e.target.checked);
+  };
 
-    const addressToCreate = {
-      street,
-      city,
-      postCode,
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const contactAdress = {
+      street: street,
+      city: city,
+      postCode: postCode,
     };
 
-    const fetchOptions = {
+    const fetchOptionsAddress = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(addressToCreate),
+      body: JSON.stringify(contactAdress),
     };
 
-    fetch("http://localhost:3030/addresses", fetchOptions)
+    fetch("http://localhost:3030/addresses", fetchOptionsAddress)
       .then((res) => res.json())
       .then((newAddress) => {
-        // console.log("addresses POST request: ", newAddress);
+        console.log("Inside POST response", newAddress);
 
         const contactToCreate = {
-          firstName,
-          lastName,
-          blockContact,
+          firstName: name,
+          lastName: lastName,
+          blockContact: check,
           addressId: newAddress.id,
         };
-
-        console.log("contact to create: ", contactToCreate);
 
         const fetchOptions = {
           method: "POST",
@@ -61,60 +66,25 @@ function CreateContactForm() {
           body: JSON.stringify(contactToCreate),
         };
 
-        fetch(`http://localhost:3030/contacts`, fetchOptions)
+        fetch("http://localhost:3030/contacts", fetchOptions)
           .then((res) => res.json())
-          .then((newContact) => {
-            console.log("New contact: ", newContact);
+          .then((newUser) => {
+            console.log("Inside POST response", newUser);
 
             const contactToAdd = {
-              ...newContact,
+              ...newUser,
               address: newAddress,
             };
-            console.log("contactToAdd: ", contactToAdd);
 
-            setContacts([...ContactsList, contactToAdd]);
+            setContacts([...contacts, contactToAdd]);
           });
       });
   };
 
-  //   const contactToCreate = {
-  //     firstName,
-  //     lastName,
-  //     // addressId: newAddress.id,
-  //   };
-
-  //   const addressToCreate = {
-  //     street,
-  //     city,
-  //     postCode,
-  //   };
-
-  //   const fetchOptionsTwo = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(addressToCreate),
-  //   };
-
-  //   fetch(`http://localhost:3030/addresses`, fetchOptionsTwo)
-  //     .then((res) => res.json())
-  //     .then((newAddress) => {
-  //       console.log(newAddress);
-  //     });
-  // };
-
-  const handleFistName = (event) => setFistName(event.target.value);
-  const handleLastName = (event) => setLastName(event.target.value);
-  const handleBlockCheckBox = (event) => setBlockContact(event.target.checked);
-  const handleStreet = (event) => setStreet(event.target.value);
-  const handleCity = (event) => setCity(event.target.value);
-  const handlePostCode = (event) => setPostCode(event.target.value);
-
   return (
     <form
       className="form-stack light-shadow center contact-form"
-      onChange={handleSubmit}
+      onSubmit={handleSubmit}
     >
       <h1>Create Contact</h1>
       <label htmlFor="first-name-input">First Name:</label>
@@ -122,42 +92,48 @@ function CreateContactForm() {
         id="first-name-input"
         name="first-name-input"
         type="text"
-        onChange={handleFistName}
+        onChange={handleUserNameInput}
+        value={name}
       />
       <label htmlFor="last-name-input">Last Name:</label>
       <input
         id="last-name-input"
         name="last-name-input"
         type="text"
-        onChange={handleLastName}
+        onChange={handleUserLastNameInput}
+        value={lastName}
       />
       <label htmlFor="street-input">Street:</label>
       <input
         id="street-input"
         name="street-input"
         type="text"
-        onChange={handleStreet}
+        onChange={handleStreetInput}
+        value={street}
       />
       <label htmlFor="city-input">City:</label>
       <input
         id="city-input"
         name="city-input"
         type="text"
-        onChange={handleCity}
+        onChange={handleCityInput}
+        value={city}
       />
       <label htmlFor="post-code-input">Post Code:</label>
       <input
         id="post-code-input"
         name="post-code-input"
         type="text"
-        onChange={handlePostCode}
+        onChange={handlePostCodeInput}
+        value={postCode}
       />
       <div className="checkbox-section">
         <input
           id="block-checkbox"
           name="block-checkbox"
           type="checkbox"
-          onChange={handleBlockCheckBox}
+          onChange={handleCheckbox}
+          checked={check}
         />
         <label htmlFor="block-checkbox">Block</label>
       </div>
